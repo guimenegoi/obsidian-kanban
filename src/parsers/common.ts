@@ -20,8 +20,46 @@ export interface BaseFormat {
   reparseBoard(): Board;
 }
 
-export const completeString = `**${t('Complete')}**`;
 export const archiveString = '***';
+export const canonicalArchiveTitle = 'Archive';
+export const canonicalCompleteTitle = 'Complete';
+
+function normalizeMarker(value: string): string {
+  return value
+    .trim()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase();
+}
+
+export function isArchiveTitle(value: string): boolean {
+  return new Set([
+    canonicalArchiveTitle,
+    t('Archive'),
+    'Archive',
+    'Archives',
+    'Archived',
+    'Arquivado',
+    'Arquivo',
+    'Arquivados',
+    'Arquivadas',
+  ].map(normalizeMarker)).has(normalizeMarker(value));
+}
+
+export function isCompleteMarker(value: string): boolean {
+  return new Set([
+    canonicalCompleteTitle,
+    t('Complete'),
+    'Complete',
+    'Completed',
+    'Completo',
+    'Concluído',
+    'Concluido',
+    'Finalizado',
+  ].map(normalizeMarker)).has(normalizeMarker(value));
+}
+
+export const completeString = `**${canonicalCompleteTitle}**`;
 export const basicFrontmatter = ['---', '', `${frontmatterKey}: board`, '', '---', '', ''].join(
   '\n'
 );

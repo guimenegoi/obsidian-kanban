@@ -29,6 +29,12 @@ const lang: Partial<Lang> = {
   'Search...': 'Pesquisar...',
 
   // Settings.ts
+  'Show ribbon button': 'Mostrar botão na faixa lateral',
+  'Show the Kanban create-board button in the left ribbon. Disabled by default in this fork to avoid workspace/localization glitches.':
+    'Mostra o botão de criar quadro Kanban na faixa lateral esquerda. Desativado por padrão neste fork para evitar falhas de workspace/localização.',
+  Swimlanes: 'Swimlanes',
+  'Wrap lanes onto multiple rows instead of forcing one long horizontal row.':
+    'Quebra as listas em múltiplas linhas em vez de forçar uma única linha horizontal longa.',
   'These settings will take precedence over the default Kanban board settings.':
     'Essas configurações sobrescreverão as configurações padrão do quadro Kanban',
   'Set the default Kanban board settings. Settings can be overridden on a board-by-board basis.':

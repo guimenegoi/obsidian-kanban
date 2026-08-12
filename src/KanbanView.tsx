@@ -26,7 +26,7 @@ import KanbanPlugin from './main';
 import { frontmatterKey } from './parsers/common';
 
 export const kanbanViewType = 'kanban';
-export const kanbanIcon = 'lucide-trello';
+export const kanbanIcon = 'lucide-kanban';
 
 export class KanbanView extends TextFileView implements HoverParent {
   plugin: KanbanPlugin;

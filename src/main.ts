@@ -144,9 +144,11 @@ export default class KanbanPlugin extends Plugin {
     this.registerDomEvent(window, 'keydown', this.handleShift);
     this.registerDomEvent(window, 'keyup', this.handleShift);
 
-    this.addRibbonIcon(kanbanIcon, t('Create new board'), () => {
-      this.newKanban();
-    });
+    if (this.settings['show-ribbon-button'] === true) {
+      this.addRibbonIcon(kanbanIcon, t('Create new board'), () => {
+        this.newKanban();
+      });
+    }
   }
 
   handleShift = (e: KeyboardEvent) => {
@@ -484,7 +486,7 @@ export default class KanbanPlugin extends Plugin {
                 item
                   .setTitle(t('View as board'))
                   .setSection('pane')
-                  .setIcon('lucide-trello')
+                  .setIcon(kanbanIcon)
                   .setChecked(boardView === 'basic' || boardView === 'board')
                   .onClick(() => kanbanView.setView('board'))
               )

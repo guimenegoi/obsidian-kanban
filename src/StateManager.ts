@@ -254,6 +254,8 @@ export class StateManager {
       'show-board-settings': this.getSettingRaw('show-board-settings', suppliedSettings) ?? true,
       'show-search': this.getSettingRaw('show-search', suppliedSettings) ?? true,
       'show-set-view': this.getSettingRaw('show-set-view', suppliedSettings) ?? true,
+      'show-ribbon-button': this.getSettingRaw('show-ribbon-button', suppliedSettings) ?? false,
+      swimlanes: this.getSettingRaw('swimlanes', suppliedSettings) ?? true,
       'tag-colors': this.getSettingRaw('tag-colors', suppliedSettings) ?? [],
       'tag-sort': this.getSettingRaw('tag-sort', suppliedSettings) ?? [],
       'date-colors': this.getSettingRaw('date-colors', suppliedSettings) ?? [],

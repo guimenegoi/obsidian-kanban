@@ -43,6 +43,12 @@ const en = {
   'Search...': 'Search...',
 
   // Settings.ts
+  'Show ribbon button': 'Show ribbon button',
+  'Show the Kanban create-board button in the left ribbon. Disabled by default in this fork to avoid workspace/localization glitches.':
+    'Show the Kanban create-board button in the left ribbon. Disabled by default in this fork to avoid workspace/localization glitches.',
+  Swimlanes: 'Swimlanes',
+  'Wrap lanes onto multiple rows instead of forcing one long horizontal row.':
+    'Wrap lanes onto multiple rows instead of forcing one long horizontal row.',
   'New line trigger': 'New line trigger',
   'Select whether Enter or Shift+Enter creates a new line. The opposite of what you choose will create and complete editing of cards and lists.':
     'Select whether Enter or Shift+Enter creates a new line. The opposite of what you choose will create and complete editing of cards and lists.',

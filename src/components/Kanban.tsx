@@ -65,6 +65,7 @@ export const Kanban = ({ view, stateManager }: KanbanProps) => {
   const dateColors = stateManager.useSetting('date-colors');
   const tagColors = stateManager.useSetting('tag-colors');
   const boardView = view.useViewState(frontmatterKey);
+  const swimlanes = stateManager.useSetting('swimlanes');
 
   const closeLaneForm = useCallback(() => {
     if (boardData?.children.length > 0) {
@@ -272,6 +273,7 @@ export const Kanban = ({ view, stateManager }: KanbanProps) => {
                     [c('horizontal')]: boardView !== 'list',
                     [c('vertical')]: boardView === 'list',
                     'is-adding-lane': isLaneFormVisible,
+                    [c('swimlanes')]: swimlanes && boardView !== 'list',
                   },
                 ])}
                 triggerTypes={boardScrollTiggers}

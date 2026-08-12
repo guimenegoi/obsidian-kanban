@@ -17,10 +17,16 @@ import {
 } from 'src/components/types';
 import { laneTitleWithMaxItems } from 'src/helpers';
 import { defaultSort } from 'src/helpers/util';
-import { t } from 'src/lang/helpers';
 import { visit } from 'unist-util-visit';
 
-import { archiveString, completeString, settingsToCodeblock } from '../common';
+import {
+  archiveString,
+  canonicalArchiveTitle,
+  completeString,
+  isArchiveTitle,
+  isCompleteMarker,
+  settingsToCodeblock,
+} from '../common';
 import { DateNode, FileNode, TimeNode, ValueNode } from '../extensions/types';
 import {
   ContentBoundary,
@@ -228,7 +234,7 @@ export function listItemToItemData(stateManager: StateManager, md: string, item:
 }
 
 function isArchiveLane(child: Content, children: Content[], currentIndex: number) {
-  if (child.type !== 'heading' || toString(child, { includeImageAlt: false }) !== t('Archive')) {
+  if (child.type !== 'heading' || !isArchiveTitle(toString(child, { includeImageAlt: false }))) {
     return false;
   }
 
@@ -264,7 +270,7 @@ export function astToUnhydratedBoard(
             return false;
           }
 
-          if (childStr === t('Complete')) {
+          if (isCompleteMarker(childStr)) {
             shouldMarkItemsComplete = true;
             return true;
           }
@@ -428,7 +434,7 @@ function laneToMd(lane: Lane) {
 
 function archiveToMd(archive: Item[]) {
   if (archive.length) {
-    const lines: string[] = [archiveString, '', `## ${t('Archive')}`, ''];
+    const lines: string[] = [archiveString, '', `## ${canonicalArchiveTitle}`, ''];
 
     archive.forEach((item) => {
       lines.push(itemToMd(item));

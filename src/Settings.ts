@@ -84,6 +84,8 @@ export interface KanbanSettings {
   'show-search'?: boolean;
   'show-set-view'?: boolean;
   'show-view-as-markdown'?: boolean;
+  'show-ribbon-button'?: boolean;
+  'swimlanes'?: boolean;
   'table-sizing'?: Record<string, number>;
   'tag-action'?: 'kanban' | 'obsidian';
   'tag-colors'?: TagColor[];
@@ -132,6 +134,8 @@ export const settingKeyLookup: Set<keyof KanbanSettings> = new Set([
   'show-search',
   'show-set-view',
   'show-view-as-markdown',
+  'show-ribbon-button',
+  'swimlanes',
   'table-sizing',
   'tag-action',
   'tag-colors',
@@ -207,6 +211,39 @@ export class SettingsManager {
       });
     }
 
+
+    if (!local) {
+      new Setting(contentEl)
+        .setName(t('Show ribbon button'))
+        .setDesc(t('Show the Kanban create-board button in the left ribbon. Disabled by default in this fork to avoid workspace/localization glitches.'))
+        .then((setting) => {
+          let toggleComponent: ToggleComponent;
+
+          setting
+            .addToggle((toggle) => {
+              toggleComponent = toggle;
+              const [value] = this.getSetting('show-ribbon-button', false);
+              toggle.setValue((value as boolean) ?? false);
+              toggle.onChange((newValue) => {
+                this.applySettingsUpdate({
+                  'show-ribbon-button': {
+                    $set: newValue,
+                  },
+                });
+              });
+            })
+            .addExtraButton((b) => {
+              b.setIcon('lucide-rotate-ccw')
+                .setTooltip(t('Reset to default'))
+                .onClick(() => {
+                  toggleComponent.setValue(false);
+                  this.applySettingsUpdate({
+                    $unset: ['show-ribbon-button'],
+                  });
+                });
+            });
+        });
+    }
     new Setting(contentEl)
       .setName(t('Display card checkbox'))
       .setDesc(t('When toggled, a checkbox will be displayed with each card'))
@@ -363,6 +400,49 @@ export class SettingsManager {
             $unset: ['lane-width'],
           });
         });
+      });
+
+
+    new Setting(contentEl)
+      .setName(t('Swimlanes'))
+      .setDesc(t('Wrap lanes onto multiple rows instead of forcing one long horizontal row.'))
+      .then((setting) => {
+        let toggleComponent: ToggleComponent;
+
+        setting
+          .addToggle((toggle) => {
+            toggleComponent = toggle;
+
+            const [value, globalValue] = this.getSetting('swimlanes', local);
+
+            if (value !== undefined) {
+              toggle.setValue(value as boolean);
+            } else if (globalValue !== undefined) {
+              toggle.setValue(globalValue as boolean);
+            } else {
+              toggle.setValue(true);
+            }
+
+            toggle.onChange((newValue) => {
+              this.applySettingsUpdate({
+                swimlanes: {
+                  $set: newValue,
+                },
+              });
+            });
+          })
+          .addExtraButton((b) => {
+            b.setIcon('lucide-rotate-ccw')
+              .setTooltip(t('Reset to default'))
+              .onClick(() => {
+                const [, globalValue] = this.getSetting('swimlanes', local);
+                toggleComponent.setValue((globalValue as boolean) ?? true);
+
+                this.applySettingsUpdate({
+                  $unset: ['swimlanes'],
+                });
+              });
+          });
       });
 
     new Setting(contentEl).setName(t('Expand lists to full width in list view')).then((setting) => {
