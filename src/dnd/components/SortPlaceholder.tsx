@@ -10,6 +10,7 @@ export interface SortPlaceholderProps extends WithChildren {
   accepts: string[];
   className?: string;
   isStatic?: boolean;
+  isWrapped?: boolean;
 }
 
 export function SortPlaceholder({
@@ -17,6 +18,7 @@ export function SortPlaceholder({
   accepts,
   className,
   isStatic,
+  isWrapped,
   children,
 }: SortPlaceholderProps) {
   const elementRef = useRef<HTMLDivElement>(null);
@@ -31,7 +33,11 @@ export function SortPlaceholder({
   }, accepts);
 
   return (
-    <div ref={measureRef} className={classcat([className, c('placeholder')])}>
+    <div
+      ref={measureRef}
+      className={classcat([className, c('placeholder')])}
+      style={isWrapped ? { flexGrow: 0 } : undefined}
+    >
       <div ref={elementRef}>
         {!isStatic ? (
           <Droppable

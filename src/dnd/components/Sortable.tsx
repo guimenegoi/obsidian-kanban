@@ -6,6 +6,7 @@ import { DndManagerContext, SortManagerContext } from './context';
 
 interface SortableProps extends WithChildren {
   axis: Axis;
+  wrapped?: boolean;
   onSortChange?: (isSorting: boolean) => void;
 }
 
@@ -13,7 +14,7 @@ export function StaticSortable(props: SortableProps) {
   return <>{props.children}</>;
 }
 
-export function Sortable({ axis, children, onSortChange }: SortableProps) {
+export function Sortable({ axis, wrapped = false, children, onSortChange }: SortableProps) {
   const dndManager = useContext(DndManagerContext);
   const managerRef = useRef<SortManager>();
   const sortManager = useMemo(() => {
@@ -22,7 +23,7 @@ export function Sortable({ axis, children, onSortChange }: SortableProps) {
         managerRef.current.destroy();
       }
 
-      const manager = new SortManager(dndManager, axis, onSortChange);
+      const manager = new SortManager(dndManager, axis, onSortChange, wrapped);
 
       managerRef.current = manager;
 
@@ -30,7 +31,7 @@ export function Sortable({ axis, children, onSortChange }: SortableProps) {
     }
 
     return null;
-  }, [dndManager, axis, onSortChange]);
+  }, [dndManager, axis, wrapped, onSortChange]);
 
   useEffect(() => {
     return () => managerRef.current?.destroy();

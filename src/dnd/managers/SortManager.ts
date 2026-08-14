@@ -29,12 +29,18 @@ export class SortManager {
   isSorting: boolean;
   isPlaceholderActive: boolean;
   axis: Axis;
+  wrapped: boolean;
   placeholder: EntityAndElement | null;
   instanceId: string;
 
   sortListeners: Array<(isSorting: boolean) => void>;
 
-  constructor(dndManager: DndManager, axis: Axis, onSortChange?: (isSorting: boolean) => void) {
+  constructor(
+    dndManager: DndManager,
+    axis: Axis,
+    onSortChange?: (isSorting: boolean) => void,
+    wrapped = false
+  ) {
     this.instanceId = generateInstanceId();
     this.dndManager = dndManager;
     this.sortables = new Map();
@@ -42,6 +48,7 @@ export class SortManager {
     this.hidden = new Set();
     this.isSorting = false;
     this.axis = axis;
+    this.wrapped = wrapped;
     this.placeholder = null;
     this.sortListeners = onSortChange ? [onSortChange] : [];
 
@@ -107,7 +114,7 @@ export class SortManager {
           this.shifted.add(entityId);
         }
 
-        this.shiftEl(el, transitions.none, this.hitboxDimensions);
+        this.shiftEl(entityId, el, transitions.none, this.hitboxDimensions);
       }
     });
   };
@@ -305,8 +312,8 @@ export class SortManager {
         ) {
           if (!this.shifted.has(entityId)) {
             this.shifted.add(entityId);
-            this.shiftEl(el, transitions.outOfTheWay, dims);
           }
+          this.shiftEl(entityId, el, transitions.outOfTheWay, dims);
         } else if (this.shifted.has(entityId)) {
           this.shifted.delete(entityId);
           this.resetEl(el);
@@ -368,7 +375,49 @@ export class SortManager {
     setStyle(el, 'display', 'none');
   }
 
-  shiftEl(el: HTMLElement, transition: string, dimensions: { width: number; height: number }) {
+  getNextVisibleMeasure(entityId: string): HTMLElement | null {
+    const entries = Array.from(this.sortables.entries());
+    const currentIndex = entries.findIndex(([id]) => id === entityId);
+
+    if (currentIndex === -1) {
+      return null;
+    }
+
+    for (let i = currentIndex + 1; i < entries.length; i++) {
+      const [nextId, [, , measureEl]] = entries[i];
+      if (!this.hidden.has(nextId)) {
+        return measureEl;
+      }
+    }
+
+    return null;
+  }
+
+  shiftEl(
+    entityId: string,
+    el: HTMLElement,
+    transition: string,
+    dimensions: { width: number; height: number }
+  ) {
+    if (this.axis === 'horizontal' && this.wrapped) {
+      const sortable = this.sortables.get(entityId);
+      const nextMeasure = this.getNextVisibleMeasure(entityId);
+
+      if (sortable && nextMeasure) {
+        const [, , currentMeasure] = sortable;
+        const currentRect = currentMeasure.getBoundingClientRect();
+        const nextRect = nextMeasure.getBoundingClientRect();
+
+        setStyle(el, 'transition', transition);
+        setStyle(
+          el,
+          'transform',
+          `translate3d(${nextRect.left - currentRect.left}px, ${nextRect.top - currentRect.top}px, 0)`
+        );
+        return;
+      }
+    }
+
     const shift =
       this.axis === 'horizontal'
         ? `translate3d(${dimensions.width}px, 0, 0)`

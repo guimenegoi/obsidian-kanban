@@ -66,6 +66,7 @@ export const Kanban = ({ view, stateManager }: KanbanProps) => {
   const tagColors = stateManager.useSetting('tag-colors');
   const boardView = view.useViewState(frontmatterKey);
   const swimlanes = stateManager.useSetting('swimlanes');
+  const isSwimlaneLayout = !!swimlanes && boardView !== 'list';
 
   const closeLaneForm = useCallback(() => {
     if (boardData?.children.length > 0) {
@@ -132,7 +133,6 @@ export const Kanban = ({ view, stateManager }: KanbanProps) => {
     const win = view.getWindow();
     const trimmed = searchQuery.trim();
     let id: number;
-
     if (trimmed) {
       id = win.setTimeout(() => {
         setDebouncedSearchQuery(trimmed);
@@ -273,18 +273,31 @@ export const Kanban = ({ view, stateManager }: KanbanProps) => {
                     [c('horizontal')]: boardView !== 'list',
                     [c('vertical')]: boardView === 'list',
                     'is-adding-lane': isLaneFormVisible,
-                    [c('swimlanes')]: swimlanes && boardView !== 'list',
+                    [c('swimlanes')]: isSwimlaneLayout,
                   },
                 ])}
                 triggerTypes={boardScrollTiggers}
               >
-                <div>
-                  <Sortable axis={axis}>
+                <div
+                  style={
+                    isSwimlaneLayout
+                      ? {
+                          flexWrap: 'wrap',
+                          width: '100%',
+                          height: 'fit-content',
+                          alignContent: 'flex-start',
+                          rowGap: '10px',
+                        }
+                      : undefined
+                  }
+                >
+                  <Sortable axis={axis} wrapped={isSwimlaneLayout}>
                     <Lanes lanes={boardData.children} collapseDir={axis} />
                     <SortPlaceholder
                       accepts={boardAccepts}
                       className={c('lane-placeholder')}
                       index={boardData.children.length}
+                      isWrapped={isSwimlaneLayout}
                     />
                   </Sortable>
                 </div>
