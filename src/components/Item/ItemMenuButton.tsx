@@ -35,6 +35,7 @@ export const ItemMenuButton = Preact.memo(function ItemMenuButton({
           onPointerDown={(e) => e.preventDefault()}
           onClick={() => setEditState(EditingState.cancel)}
           className={`${c('item-postfix-button')} is-enabled clickable-icon`}
+          style={{ marginInlineEnd: 0 }}
           aria-label={t('Cancel')}
         >
           <Icon name="lucide-x" />
@@ -45,6 +46,7 @@ export const ItemMenuButton = Preact.memo(function ItemMenuButton({
           onPointerDown={(e) => e.preventDefault()}
           onClick={showMenu as any}
           className={`${c('item-postfix-button')} clickable-icon`}
+          style={{ marginInlineEnd: 0 }}
           aria-label={t('More options')}
         >
           <Icon name="lucide-more-vertical" />
