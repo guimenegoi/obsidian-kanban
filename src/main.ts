@@ -576,12 +576,6 @@ export default class KanbanPlugin extends Plugin {
 
   registerCommands() {
     this.addCommand({
-      id: 'create-new-kanban-board',
-      name: t('Create new board'),
-      callback: () => this.newKanban(),
-    });
-
-    this.addCommand({
       id: 'archive-completed-cards',
       name: t('Archive completed cards in active board'),
       checkCallback: (checking) => {
