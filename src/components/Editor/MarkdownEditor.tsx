@@ -239,7 +239,15 @@ export function MarkdownEditor({
     }
 
     const onShow = () => {
-      elRef.current.scrollIntoView({ block: 'end' });
+      const editorElement = elRef.current;
+      if (!editorElement) return;
+
+      // Keep the focused editor visible without jumping when it already fits above the keyboard.
+      const viewport = cm.dom.win.visualViewport;
+      const visibleBottom = viewport ? viewport.offsetTop + viewport.height : cm.dom.win.innerHeight;
+      if (editorElement.getBoundingClientRect().bottom > visibleBottom) {
+        editorElement.scrollIntoView({ block: 'nearest' });
+      }
     };
 
     if (Platform.isMobile) {

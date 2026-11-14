@@ -646,6 +646,7 @@ button.kanban-plugin__lane-settings-button + button.kanban-plugin__lane-settings
   line-height: 1;
   margin-block-start: 5px;
   width: auto;
+  align-self: flex-end;
 
   .is-mobile & {
     font-size: 12px;
@@ -671,13 +672,15 @@ button.kanban-plugin__lane-settings-button + button.kanban-plugin__lane-settings
   display: none;
 }
 
-.is-mobile .kanban-plugin__item .markdown-source-view.mod-cm6 {
+// Inline card editors must size to their text, not inherit the full mobile editor viewport.
+.is-mobile .kanban-plugin__item .markdown-source-view.mod-cm6,
+.is-mobile .kanban-plugin__item .cm-editor,
+.is-mobile .kanban-plugin__item .cm-scroller {
   height: auto;
   min-height: 0;
 }
 
-.is-mobile .kanban-plugin__item .cm-editor,
-.is-mobile .kanban-plugin__item .cm-scroller {
+.is-mobile .kanban-plugin__item .cm-content {
   min-height: 0;
 }
 
