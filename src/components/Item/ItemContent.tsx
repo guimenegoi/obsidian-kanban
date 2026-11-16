@@ -1,4 +1,5 @@
 import { EditorView } from '@codemirror/view';
+import { Platform } from 'obsidian';
 import { memo } from 'preact/compat';
 import {
   Dispatch,
@@ -12,6 +13,7 @@ import {
 import { StateManager } from 'src/StateManager';
 import { useNestedEntityPath } from 'src/dnd/components/Droppable';
 import { Path } from 'src/dnd/types';
+import { t } from 'src/lang/helpers';
 import { getTaskStatusDone, toggleTaskString } from 'src/parsers/helpers/inlineMetadata';
 
 import { MarkdownEditor, allowNewLine } from '../Editor/MarkdownEditor';
@@ -257,19 +259,52 @@ export const ItemContent = memo(function ItemContent({
   if (!isStatic && isEditing(editState)) {
     return (
       <div className={c('item-input-wrapper')}>
-        <MarkdownEditor
-          editState={editState}
-          className={c('item-input')}
-          onEnter={onEnter}
-          onEscape={onEscape}
-          onSubmit={onSubmit}
-          value={item.data.titleRaw}
-          onChange={(update) => {
-            if (update.docChanged) {
-              titleRef.current = update.state.doc.toString().trim();
-            }
-          }}
-        />
+        {Platform.isMobile ? (
+          <>
+            <textarea
+              className={c('item-mobile-textarea')}
+              aria-label={t('Card title...')}
+              defaultValue={item.data.titleRaw}
+              ref={(el) => {
+                if (el && el.dataset.initialized !== 'true') {
+                  el.dataset.initialized = 'true';
+                  el.focus();
+                  el.setSelectionRange(el.value.length, el.value.length);
+                }
+              }}
+              onInput={(event) => {
+                const input = event.currentTarget;
+                titleRef.current = input.value.trim();
+              }}
+              onKeyDown={(event) => {
+                if (event.key === 'Escape') {
+                  event.preventDefault();
+                  onEscape();
+                } else if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+                  event.preventDefault();
+                  onSubmit();
+                }
+              }}
+            />
+            <button className={`${c('item-submit-button')} mod-cta`} onClick={onSubmit}>
+              {t('Submit')}
+            </button>
+          </>
+        ) : (
+          <MarkdownEditor
+            editState={editState}
+            className={c('item-input')}
+            onEnter={onEnter}
+            onEscape={onEscape}
+            onSubmit={onSubmit}
+            value={item.data.titleRaw}
+            onChange={(update) => {
+              if (update.docChanged) {
+                titleRef.current = update.state.doc.toString().trim();
+              }
+            }}
+          />
+        )}
       </div>
     );
   }

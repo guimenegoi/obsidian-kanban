@@ -672,6 +672,14 @@ button.kanban-plugin__lane-settings-button + button.kanban-plugin__lane-settings
   display: none;
 }
 
+.is-mobile .kanban-plugin__item-mobile-textarea {
+  width: 100%;
+  min-height: 5em;
+  resize: vertical;
+  font: inherit;
+  line-height: var(--line-height-normal);
+}
+
 // Inline card editors must size to their text, not inherit the full mobile editor viewport.
 .is-mobile .kanban-plugin__item .markdown-source-view.mod-cm6,
 .is-mobile .kanban-plugin__item .cm-editor,
