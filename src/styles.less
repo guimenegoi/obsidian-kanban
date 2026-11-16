@@ -2101,6 +2101,20 @@ body:not(.native-scrollbars) .kanban-plugin__scroll-container::-webkit-scrollbar
     min-width: min(88vw, 420px);
   }
 
+  // On mobile, collapsed lanes retain a readable horizontal header.
+  .is-mobile .kanban-plugin__lane-wrapper.collapse-horizontal {
+    width: min(88vw, 420px);
+
+    .kanban-plugin__lane-header-wrapper {
+      writing-mode: horizontal-tb;
+    }
+
+    .kanban-plugin__lane-title-count,
+    .kanban-plugin__lane-title-text {
+      transform: none;
+    }
+  }
+
   .kanban-plugin .kanban-plugin__item,
   .kanban-plugin__drag-container .kanban-plugin__item {
     box-shadow: none;
